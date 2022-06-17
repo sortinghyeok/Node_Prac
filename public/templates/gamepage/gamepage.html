@@ -1,0 +1,90 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>이종혁의 게임페이지</title>
+<link rel = "stylesheet" type = "text/css" href = "../static/css/header.css">
+	<script>
+		let cookie = document.cookie.split('=')[1];
+		console.log('cookie : ' + cookie)
+	</script>
+</head>
+<body>
+	<div id = "top" style = "position : absolute; right : 20px">
+		<span id = "login"></span>
+		<span><a href = "/signup">회원가입</a></span>
+		<script>
+	
+			console.log("document.cookie :" + document.cookie)
+			var logspan = document.getElementById('login');
+			if(document.cookie.split('=')[1] == null || document.cookie.split('=')[1] == '')
+			{
+				console.log('no cookie')
+				var hr = document.createElement('a');
+				var textnode = document.createTextNode('로그인')
+				hr.href = '/login';
+				hr.appendChild(textnode)
+				logspan.appendChild(hr)
+			}
+			else{
+				console.log('cookie exists')
+				var hr = document.createElement('a');
+				var textnode = document.createTextNode('로그아웃')
+				hr.appendChild(textnode)
+		
+				hr.onclick = function(){
+					console.log('로그아웃 눌림')
+					document.cookie = 'login_id' + '=; expires=Thu, 01 Jan 1970 00:00:01 GMT;';
+                    alert('로그아웃 되었습니다.')
+					window.location.href = '/gamepage';
+				}
+				hr.href = '/gamepage';
+				logspan.appendChild(hr)
+			}
+		</script>
+	</div>
+	<br>
+
+	<div id = "header" style = "background-color: gray; text-align: center; height : 80px;
+	font-size: 35px; padding-top: 35px; font-weight: bold; color: white; cursor : pointer;"
+	onclick="location.href = '/'"
+	>
+		이종혁의 게임페이지
+	</div>
+	<br>
+	<div>
+		<table border = "1">
+		<tr>
+			<td>
+				<a href = "/gamepage" id = 'nav' style = "padding-left : 40%">
+				게임페이지
+				</a>
+			</td>
+			<td>
+				<a href = "/forum" id = 'nav' style = "padding-left : 40%">
+				게시판
+				</a>
+			</td>
+		</tr>
+		
+	</table>
+	</div>
+	<div id = "twoGames" style= "margin-left: 15%; margin-top : 50px;">
+		<div id = "snake" style = "display: inline;" onmouseover="this.style.opacity = '0.3'" onmouseout="this.style.opacity = '1'">
+		<a href ="/gamepage/snakegame"><img src = "/templates/gamepage/snake.png" style = "height :320px; width : 400px;"></a>	
+		</div>
+		<div id = "block" onmouseover="this.style.opacity = '0.3'" onmouseout="this.style.opacity = '1'" style = "display: inline; margin-left : 25%;">
+		<a href ="/gamepage/blockgame"><img src = "/templates/gamepage/block.png" style = "height :320px; width : 400px;"></a>
+		</div>
+	</div>
+
+	<div style = "text-align: center; font-size: 30px; margin-top : 50px; bottom : -5; margin-bottom: 30px">
+		어서오세요. 많은 게임이 준비되어 있습니다.
+	</div>
+	<hr>
+	<div style = "text-align: center; font-size: 25px; bottom : -5;">
+		12172133 이종혁 / 인터넷 프로그래밍 기말 프로젝트
+	</div>
+</body>
+</html>

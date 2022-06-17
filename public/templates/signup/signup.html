@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>이종혁의 게임페이지</title>
+<link rel = "stylesheet" type = "text/css" href = "../static/css/header.css">
+<script>
+	function submitted() {
+		var password = document.getElementById("passwd");
+		
+		var passwordconf = document.getElementById("passwdConfirm");
+		console.log(password.value);
+		console.log(passwordconf.value);
+		if(password.value != passwordconf.value){
+			alert("비밀번호와 비밀번호 확인 불일치");
+			return;
+		}
+		var id = document.getElementById("id").value;
+		var nickname = document.getElementById("nickname").value;
+		console.log(id)
+		console.log(password.value)
+		console.log(nickname)
+		var data = {"id" : String(id), "passwd": String(password.value), "nickname": String(nickname)};
+
+		var req = new XMLHttpRequest();
+		req.open('POST', '/signup', true);
+    	req.setRequestHeader('Content-type', 'application/json');
+    	req.send(JSON.stringify(data));
+		req.onreadystatechange = function (e) {
+  		// readyStates는 XMLHttpRequest의 상태(state)를 반환
+  		// readyState: 4 => DONE(서버 응답 완료)
+			if (req.readyState === XMLHttpRequest.DONE) {
+				// status는 response 상태 코드를 반환 : 200 => 정상 응답
+				if(req.status == 200) {
+					var res_data = JSON.parse(req.responseText);
+					if(res_data.status == "error"){
+						alert(res_data.message);
+						return;
+					}
+					else{
+						alert('회원가입 성공!')
+						document.cookie = name + '=; expires=Thu, 01 Jan 1970 00:00:01 GMT;';
+						console.log(document.cookie.split('=')[1]);
+						window.location.href = "/";
+					}
+				} else {
+					console.log("Error!");
+				}
+  		}
+};
+
+	}
+</script>
+</head>
+<body>
+<div id = "top" style = "position : absolute; right : 20px">
+		<span><a href = "/login">로그인</span>
+		<span><a href = "/signup">회원가입</a></span>
+	</div>
+	<br>
+
+	<div id = "header" style = "background-color: gray; text-align: center; height : 80px;
+	font-size: 35px; padding-top: 35px; font-weight: bold; color: white; cursor : pointer;"
+	onclick="location.href = '/'"
+	>
+		이종혁의 게임페이지
+	</div>
+	<br>
+
+</body>
+<div>
+		<table border = "1">
+		<tr>
+			<td>
+				<a href = "/gamepage" id = 'nav' style = "padding-left : 40%">
+				게임 페이지
+				</a>
+			</td>
+			<td>
+				<a href = "/forum" id = 'nav' style = "padding-left : 40%">
+				게시판
+				</a>
+			</td>
+		</tr>
+		
+	</table>
+	</div>
+	<div style = "margin-left: 40%; margin-top : 2%; background-color: gray; padding : 20px; border-radius:4px; width : 350px;">
+		
+			<h2 style= "display: inline;color :  white;">아이디 : </h2><br>
+			<input style = "padding : 5px; font-size: 20px; width :300px;" type = "text" id = "id" placeholder = '이메일 형식'><br><br>
+			<h2 style = "display: inline;color :  white;">비밀번호 : </h2><br>
+			<input style = "padding : 5px; font-size: 20px; width :300px;" type = "text" id = "passwd" placeholder = '비밀번호 입력' type  = "password"><br><br>
+			<h2 style= "display: inline;color :  white;">비밀번호 확인 : </h2><br>
+			<input style = "padding : 5px; font-size: 20px; width :300px;" type  = "text" id = "passwdConfirm" placeholder = '위와 동일한 비밀 번호 입력' ><br><br>
+			<h2 style = "display: inline;color :  white;">별명 : </h2><br>
+			<input style = "padding : 5px; font-size: 20px; width :300px;" type = "text" id = "nickname" placeholder = '별명 입력'><br><br>
+			<Button style = "height : 40px; width : 100px; font-family: 30px" onclick = "submitted()">회원가입</Button>
+		
+	</div>
+	
+	<div style = "text-align: center; font-size: 30px; margin-top : 50px; bottom : -5; margin-bottom: 30px">
+		어서오세요. 회원가입 해서 게임을 즐기세요.
+	</div>
+	<hr>
+	<div style = "text-align: center; font-size: 25px; bottom : -5;">
+		12172133 이종혁 / 인터넷 프로그래밍 001 기말고사 대체과제
+	</div>
+</html>

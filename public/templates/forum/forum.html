@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>forum</title>
+<link rel = "stylesheet" type = "text/css" href = "../static/css/header.css">
+</head>
+<body >
+    <!-- NAV Var-->
+    <!-- --> 
+    <!-- list of contents-->
+   
+	<div id = "top" style = "position : absolute; right : 20px">
+		
+		<span id = "login"></span>
+		<span><a href = "/signup">회원가입</a></span>
+		<script>
+			var logspan = document.getElementById('login');
+			if(document.cookie.split('=')[1] == null || document.cookie.split('=')[1] == '')
+			{
+				console.log('no cookie')
+				var hr = document.createElement('a');
+				var textnode = document.createTextNode('로그인')
+				hr.href = '/login';
+				hr.appendChild(textnode)
+				logspan.appendChild(hr)
+			}
+			else{
+				console.log('cookie exists')
+				var hr = document.createElement('a');
+				var textnode = document.createTextNode('로그아웃')
+				hr.appendChild(textnode)
+               
+				hr.onclick = function(){
+					console.log('로그아웃 눌림')
+                    document.cookie = 'login_id' + '=; expires=Thu, 01 Jan 1970 00:00:01 GMT;';
+                    alert('로그아웃 되었습니다.')
+                    window.location.href = '/forum';
+				}
+                hr.href = '/forum';
+				logspan.appendChild(hr)
+			}
+		</script>
+	</div>
+<br>
+    
+	<div id = "header" style = "background-color: gray; text-align: center; height : 80px;
+	font-size: 35px; padding-top: 35px; font-weight: bold; color: white; cursor : pointer;"
+	onclick="location.href = '/'"
+	>
+		이종혁의 게임페이지
+	</div>
+	<br>
+	
+	<div>
+		<table border = "1">
+		<tr>
+			<td>
+				<a href = "/gamepage" id = 'nav' style = "padding-left : 40%">
+				게임페이지
+				</a>
+			</td>
+			<td>
+				<a href = "/forum" id = 'nav' style = "padding-left : 40%">
+				게시판
+				</a>
+			</td>
+		</tr>
+    </table>
+
+    <button 
+    onclick = "location.href = '/forum/writing'"
+    style = "margin-top: 30px; width : 150px; height : 70px;
+     align-self: center; font-size: 30px; margin-left: 46%;">글쓰기</button>
+
+    <table id = 'forumtbl'
+    border="2" style = "margin-top: 20px;  width : 1200px; height : 70px;
+    padding : 20px; font-size: 35px; margin-left: 18%; text-align: center;"
+    >
+       
+    <th style = "width : 20%;">글 제목</th>
+    <th style = "width : 40%;">글 내용</th>
+    <th style = "width : 10%;">작성자</th>
+
+    <script>
+     
+        function getJson(){
+            var list;
+       
+            let temp = 'temp';
+            var req = new XMLHttpRequest();
+            var data = {"id" : temp};
+            req.open('POST', '/forum', true);
+            req.setRequestHeader('Content-type', 'application/json');
+            req.send(JSON.stringify(data));
+            req.onreadystatechange = function (e) {
+            // readyStates는 XMLHttpRequest의 상태(state)를 반환
+            // readyState: 4 => DONE(서버 응답 완료)
+                if (req.readyState === XMLHttpRequest.DONE) {
+                    // status는 response 상태 코드를 반환 : 200 => 정상 응답
+                    if(req.status == 200) {
+                        var res_data = JSON.parse(req.responseText);
+                        if(res_data.status == "error"){
+                            alert(res_data.message);
+                            return;
+                        }
+                        else{
+                        list = res_data.data;
+                       console.log(list)
+                        console.log(list[0].title);
+                        console.log(list[1].title);
+                        console.log(typeof(list))
+                        console.log('list size : ' + list.length)
+                        var forumtbl = document.getElementById('forumtbl');
+                        for(let i = 0; i<list.length; i++)
+                        {
+                            var newtr = document.createElement('tr')
+                            var newtitle = document.createElement('td');
+                            var newcontent = document.createElement('td');
+                            var newwriter = document.createElement('td');
+                            var newdate = document.createElement('td');
+                            newtitle.innerHTML = list[i].title;
+                            newcontent.innerHTML =list[i].content;
+                            newwriter.innerHTML = list[i].id;
+                
+                            newtr.append(newtitle)
+                            newtr.append(newcontent)
+                            newtr.append(newwriter)
+                    
+                            forumtbl.append(newtr)
+                        }
+                        return;
+                        }
+                    } else {
+                        console.log("Error!");
+                    }
+                }
+            }
+    
+            
+            }
+    
+            getJson();
+          
+            </script>
+  
+        
+    </table>
+
+</body>
+</html>

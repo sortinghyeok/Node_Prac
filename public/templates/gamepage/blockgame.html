@@ -1,0 +1,367 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="EUC-KR">
+<title>Insert title here</title>
+<style>
+.container {
+    height: 400px;
+    width: 80%;
+    margin-left: 5%;
+    overflow: hidden;
+    border: 1px solid black;
+    margin-top: 20px;
+    position: relative;
+    background-color: black;
+}
+
+.score,
+.lives {
+    font-size: 30px;
+}
+
+.brick {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 91px;
+    height: 40px;
+    padding: 1px;
+    color: white;
+    border: 1px solid white;
+    font-size: 1.8em;
+    text-align: center;
+    line-height: 40px;
+}
+</style>
+</head>
+<head>
+    <link rel = "stylesheet" type = "text/css" href = "../static/css/header.css">
+    <title>JavaScript</title>
+    <link href="style.css" rel="stylesheet" type="text/css"> 
+</head>
+
+<body>
+	<div id = "top" style = "position : absolute; right : 20px">
+		<span id = "login"></span>
+		<span><a href = "/signup">회원가입</a></span>
+		<script>
+	
+			console.log("document.cookie :" + document.cookie)
+			var logspan = document.getElementById('login');
+			if(document.cookie.split('=')[1] == null || document.cookie.split('=')[1] == '')
+			{
+                alert('로그인 하지 않으면 게임을 할 수 없습니다.')
+                 window.location.href = '/login';
+				console.log('no cookie')
+				var hr = document.createElement('a');
+				var textnode = document.createTextNode('로그인')
+				hr.href = '/login';
+				hr.appendChild(textnode)
+				logspan.appendChild(hr)
+			}
+			else{
+				console.log('cookie exists')
+				var hr = document.createElement('a');
+				var textnode = document.createTextNode('로그아웃')
+				hr.appendChild(textnode)
+		
+				hr.onclick = function(){
+					console.log('로그아웃 눌림')
+                    document.cookie = 'login_id' + '=; expires=Thu, 01 Jan 1970 00:00:01 GMT;';
+                    alert('로그아웃 되었습니다.')
+               
+                    window.location.href = '/gamepage/blockgame';
+				}
+                hr.href = '/gamepage/blockgame';
+				logspan.appendChild(hr)
+			}
+		</script>
+	</div>
+	<br>
+
+	<div id = "header" style = "background-color: gray; text-align: center; height : 80px;
+	font-size: 35px; padding-top: 35px; font-weight: bold; color: white; cursor : pointer;"
+	onclick="location.href = '/'"
+	>
+		이종혁의 게임페이지
+	</div>
+	<br>
+	<div>
+			<table border = "1">
+			<tr>
+				<td>
+					<a href = "/gamepage" id = 'nav' style = "padding-left : 40%">
+					게임페이지
+					</a>
+				</td>
+				<td>
+					<a href = "/forum" id = 'nav' style = "padding-left : 40%">
+					게시판
+					</a>
+				</td>
+			</tr>
+			
+		</table>
+	</div>
+    <div style = "font-size: 30px; text-align: center;"> 최대 점수에 도전하세요! / 점수 : <span class = "score">0</span> / 남은 목숨 : <span class="lives"> </span> 
+    <br>마우스 클릭으로 시작/ 방향키 위 키로 공 발사 / 방향키 조작</div>
+    <div class="container"></div>
+    <script>
+    var img = new Image();
+    img.src = "/templates/gamepage/block.png";
+        const myid = document.cookie.split('=')[1];
+        const container = document.querySelector('.container');
+        let conDim = container.getBoundingClientRect();
+        const gameover = document.createElement('div');
+        gameover.textContent = "마우스 클릭으로 시작";
+        gameover.style.position = "absolute";
+        gameover.style.color = "white";
+        gameover.style.lineHeight = "60px";
+        gameover.style.height = "250px";
+        gameover.style.textAlign = "center";
+        gameover.style.fontSize = "3em";
+        gameover.style.textTransform = "uppercase";
+        gameover.style.backgroundColor = "skyblue";
+        gameover.style.width = "100%";
+        gameover.addEventListener('click', startGame);
+        container.appendChild(gameover);
+        const ball = document.createElement('div');
+        ball.style.position = "absolute";
+        ball.style.width = "20px";
+        ball.style.height = "20px";
+        ball.style.backgroundColor = "white";
+        ball.style.borderRadius = "25px";
+        ball.style.backgroundImage = "url('ball.png')";
+        ball.style.backgroundSize = "20px 20px";
+        ball.style.top = "70%";
+        ball.style.left = "50%";
+        ball.style.display = "none";
+        container.appendChild(ball);
+        const paddle = document.createElement('div');
+        paddle.style.position = "absolute";
+        paddle.style.backgroundColor = "white";
+        paddle.style.height = "20px";
+        paddle.style.width = "100px";
+        paddle.style.borderRadius = "25px";
+        paddle.style.bottom = "30px";
+        paddle.style.left = "50%";
+        container.appendChild(paddle);
+        document.addEventListener('keydown', function (e) {
+            //console.log(e.keyCode);
+            if (e.keyCode === 37) paddle.left = true;
+            if (e.keyCode === 39) paddle.right = true;
+            if (e.keyCode === 38 && !player.inPlay) player.inPlay = true;
+        })
+        document.addEventListener('keyup', function (e) {
+            if (e.keyCode === 37) paddle.left = false;
+            if (e.keyCode === 39) paddle.right = false;
+        })
+        const player = {
+            gameover: true
+        };
+
+        function startGame() {
+            if (player.gameover) {
+                player.gameover = false;
+                gameover.style.display = "none";
+                player.score = 0;
+                player.lives = 1;
+                player.inPlay = false;
+                ball.style.display = "block";
+                ball.style.left = paddle.offsetLeft + 50 + "px";
+                ball.style.top = paddle.offsetTop - 30 + "px";
+                player.ballDir = [2, -5];
+                player.num = 80;
+                setupBricks(player.num);
+                scoreUpdater();
+               
+                player.ani = window.requestAnimationFrame(update);
+            }
+        }
+
+        function setupBricks(num) {
+        	 
+            let row = {
+                x: ((conDim.width % 100) / 2)
+                , y: 50
+            }
+            let skip = false;
+            for (let x = 0; x < num; x++) {
+                //console.log(row);
+                if (row.x > (conDim.width - 100)) {
+                    row.y += 50;
+                    if (row.y > (conDim.height / 2)) {
+                        skip = true;
+                    }
+                    row.x = ((conDim.width % 100) / 2);
+                }
+                row.count = x;
+                if (!skip) {
+                    createBrick(row);
+                }
+                row.x += 100;
+            }
+        }
+
+        function createBrick(pos) {
+            const div = document.createElement('div');
+            div.setAttribute('class', 'brick');
+            div.style.backgroundColor = 'skyblue';
+            div.textContent = '';
+            div.style.left = pos.x + 'px';
+            div.style.top = pos.y + 'px';
+            container.appendChild(div);
+        }
+
+        function isCollide(a, b) {
+            let aRect = a.getBoundingClientRect();
+            let bRect = b.getBoundingClientRect();
+            return !((aRect.right < bRect.left) || (aRect.left > bRect.right) || (aRect.bottom < bRect.top) || (aRect.top > bRect.bottom));
+        }
+
+        function scoreUpdater() {
+            document.querySelector('.score').textContent = player.score;
+            document.querySelector('.lives').textContent = player.lives;
+        }
+
+        function update() {
+            if (!player.gameover) {
+                let pCurrent = paddle.offsetLeft;
+                if (paddle.left && pCurrent > 0) {
+                    pCurrent -= 5;
+                }
+                if (paddle.right && (pCurrent < (conDim.width - paddle.offsetWidth))) {
+                    pCurrent += 5;
+                }
+                paddle.style.left = pCurrent + 'px';
+                if (!player.inPlay) {
+                    waitingOnPaddle();
+                }
+                else {
+                    moveBall();
+                }
+                player.ani = window.requestAnimationFrame(update);
+            }
+        }
+
+        function waitingOnPaddle() {
+            ball.style.top = (paddle.offsetTop - 22) + 'px';
+            ball.style.left = (paddle.offsetLeft + 40) + 'px';
+        }
+
+        function fallOff() {
+            player.lives--;
+            if (player.lives < 0) {
+                endGame();
+                player.lives = 0;
+            }
+            scoreUpdater();
+            stopper();
+        }
+
+        function endGame() {
+            gameover.style.display = "block";
+            gameover.innerHTML = "게임 종료!<br>당신의 점수는... " + player.score;
+            var endScore = player.score;
+            player.gameover = true;
+            ball.style.display = "none";
+            let tempBricks = document.querySelectorAll('.brick');
+            for (let tBrick of tempBricks) {
+                tBrick.parentNode.removeChild(tBrick);
+            }
+
+            window.cancelAnimationFrame(player.ani);
+		
+            var data = {
+            "id" : myid, 
+            "game" : "block", 
+            "score" : String(endScore)
+             };
+
+            var req = new XMLHttpRequest();
+            req.open('POST', '/gamepage/scoreupdate', true);
+            req.setRequestHeader('Content-type', 'application/json');
+            req.send(JSON.stringify(data));
+            req.onreadystatechange = function (e) {
+            // readyStates는 XMLHttpRequest의 상태(state)를 반환
+            // readyState: 4 => DONE(서버 응답 완료)
+                if (req.readyState === XMLHttpRequest.DONE) {
+                    // status는 response 상태 코드를 반환 : 200 => 정상 응답
+                    if(req.status == 200) {
+                        var res_data = JSON.parse(req.responseText);
+                        if(res_data.status == "error"){
+                            alert('로그인 하시지 않으시면 점수 저장이 되지 않아요.');
+                            return;
+                        }
+                        else if(res_data.status = "OK"){                     
+                            console.log(res_data)
+                            console.log(document.cookie.split('=')[1]);
+                           
+                        }
+                    } else {
+                        console.log("Error!");
+                            }
+                        }
+                }
+            }
+
+        function stopper() {
+            player.inPlay = false;
+            player.ballDir[0, -5];
+            waitingOnPaddle();
+            window.cancelAnimationFrame(player.ani);
+        }
+
+        function moveBall() {
+        	
+        	  
+            let posBall = {
+                x: ball.offsetLeft
+                , y: ball.offsetTop
+            }
+            if (posBall.y > (conDim.height - 20) || posBall.y < 0) {
+                if (posBall.y > (conDim.height - 20)) {
+                    fallOff();
+                }
+                else {
+                    player.ballDir[1] *= -1;
+                }
+            }
+            if (posBall.x > (conDim.width - 20) || posBall.x < 0) {
+                player.ballDir[0] *= -1;
+            }
+            if (isCollide(paddle, ball)) {
+                let temp = ((posBall.x - paddle.offsetLeft) - (paddle.offsetWidth / 2)) / 10;
+                console.log('hit');
+                player.ballDir[0] = temp;
+                player.ballDir[1] *= -1;
+            };
+            let bricks = document.querySelectorAll('.brick');
+            if (bricks.length == 0 && !player.gameover) {
+                stopper();
+                setupBricks(player.num);
+            }
+            for (let tBrick of bricks) {
+                if (isCollide(tBrick, ball)) {
+                    player.ballDir[1] *= -1;
+                    tBrick.parentNode.removeChild(tBrick);
+                    player.score= player.score+5;
+                    scoreUpdater();
+                }
+            }
+            posBall.y += player.ballDir[1];
+            posBall.x += player.ballDir[0];
+            ball.style.top = posBall.y + 'px';
+            ball.style.left = posBall.x + 'px';
+        }
+    </script>
+    <div style = "text-align: center; font-size: 30px; margin-top : 50px; bottom : -5; margin-bottom: 30px">
+		블록 하나당 5점입니다. 게임 종료시 본인의 최대점수가 기록됩니다.
+	</div>
+	<hr>
+	<div style = "text-align: center; font-size: 25px; bottom : -5;">
+		학번 : 12172133 / 이종혁
+	</div>
+</body>
+</html>

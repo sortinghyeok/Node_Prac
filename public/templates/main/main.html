@@ -1,0 +1,90 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>이종혁의 게임사이트</title>
+<link rel = "stylesheet" type = "text/css" href = "../static/css/header.css">
+
+<script>
+	function admin(){
+		if(document.cookie.split('=')[1] == 'admin')
+		{
+			window.location.href = '/admin';
+		}
+	}
+</script>
+</head>
+<body>
+	<div id = "top" style = "position : absolute; right : 20px">
+		
+		<span id = "login"></span>
+		<span><a href = "/signup">회원가입</a></span>
+		<script>
+	
+			console.log("document.cookie :" + document.cookie)
+			var logspan = document.getElementById('login');
+			if(document.cookie.split('=')[1] == null || document.cookie.split('=')[1] == '')
+			{
+				console.log('no cookie')
+				var hr = document.createElement('a');
+				var textnode = document.createTextNode('로그인')
+				hr.href = '/login';
+				hr.appendChild(textnode)
+				logspan.appendChild(hr)
+			}
+			else{
+				console.log('cookie exists')
+				var hr = document.createElement('a');
+				var textnode = document.createTextNode('로그아웃')
+				hr.appendChild(textnode)
+				hr.href = '/';
+				hr.onclick = function(){
+					console.log('로그아웃 눌림')
+					document.cookie = 'login_id' + '=; expires=Thu, 01 Jan 1970 00:00:01 GMT;';
+					alert('로그아웃 되었습니다.')
+					
+					window.location.href = '/';
+				}
+				logspan.appendChild(hr)
+			}
+		</script>
+	</div>
+	<br>
+
+	<div id = "header" style = "background-color: gray; text-align: center; height : 80px;
+	font-size: 35px; padding-top: 35px; font-weight: bold; color: white; cursor : pointer;"
+	onclick="location.href = '/'"
+	>
+		이종혁의 게임페이지
+	</div>
+	<br>
+	
+	<div>
+		<table border = "1">
+		<tr>
+			<td>
+				<a href = "/gamepage" id = 'nav' style = "padding-left : 40%">
+				게임페이지
+				</a>
+			</td>
+			<td>
+				<a href = "/forum" id = 'nav' style = "padding-left : 40%">
+				게시판
+				</a>
+			</td>
+		</tr>
+		
+	</table>
+	</div>
+	<img src = "/templates/main/joypad.png" style = "padding-left : 35%; width: 30%; height:  30%;"
+	onclick="admin()">
+	<div style = "text-align: center; font-size: 30px; bottom : -5; margin-bottom: 30px">
+		어서오세요. 이종혁의 게임사이트입니다.
+	</div>
+	<hr>
+	<div style = "text-align: center; font-size: 25px; bottom : -5;">
+		학번, 이름 : 1217233 이종혁 / 분반 : 인터넷프로그래밍 001반
+	</div>
+</body>
+</html>

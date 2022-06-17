@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>forum</title>
+<link rel = "stylesheet" type = "text/css" href = "../static/css/header.css">
+<script>
+
+</script>
+</head>
+<body>
+    <!-- NAV Var-->
+    <!-- --> 
+    <!-- list of contents-->
+
+	<div id = "top" style = "position : absolute; right : 20px">
+		
+		<span id = "login"></span>
+		<span><a href = "/signup">회원가입</a></span>
+		<script>
+	        alert('로그인하세요!');
+            window.location.href = '/login';
+			console.log("document.cookie :" + document.cookie)
+			var logspan = document.getElementById('login');
+			if(document.cookie.split('=')[1] == null || document.cookie.split('=')[1] == '')
+			{
+				console.log('no cookie')
+				var hr = document.createElement('a');
+				var textnode = document.createTextNode('로그인')
+				hr.href = '/login';
+				hr.appendChild(textnode)
+				logspan.appendChild(hr)
+			}
+			else{
+				console.log('cookie exists')
+				var hr = document.createElement('a');
+				var textnode = document.createTextNode('로그아웃')
+				hr.appendChild(textnode)
+				hr.href = '/';
+				hr.onclick = function(){
+					console.log('로그아웃 눌림')
+                    document.cookie = 'login_id' + '=; expires=Thu, 01 Jan 1970 00:00:01 GMT;';
+                    alert('로그아웃 되었습니다.')
+					window.location.href = '/forum/writing';
+				}
+				logspan.appendChild(hr)
+			}
+		</script>
+	</div>
+<br>
+    
+	<div id = "header" style = "background-color: gray; text-align: center; height : 80px;
+	font-size: 35px; padding-top: 35px; font-weight: bold; color: white; cursor : pointer;"
+	onclick="location.href = '/'"
+	>
+		이종혁의 게임페이지
+	</div>
+	<br>
+	
+	<div>
+		<table border = "1">
+		<tr>
+			<td>
+				<a href = "/gamepage" id = 'nav' style = "padding-left : 40%">
+				게임페이지
+				</a>
+			</td>
+			<td>
+				<a href = "/forum" id = 'nav' style = "padding-left : 40%">
+				게시판
+				</a>
+			</td>
+		</tr>
+    </table>
+   
+    <table border = "2" style = "margin-top: 50px; margin-left: 15%;">
+        <tr id = "head">
+            <td>  <input type = "text" id = "title" style = 
+                "width: 1000px; height : 50px; font-size: 30px;
+                padding : 10px;" placeholder="제목 입력"></td>
+            <td style = "width:200px">
+                <button 
+                onclick="clicked()"
+                style = "width : 200px; height : 50px; font-size: 30px;">작성 완료</button></td>
+        </tr>
+        <tr>
+            <td colspan="2">
+                <input type = 'text' id ='contents'
+                style = "padding : 10px; width : 1200px; height : 200px; font-size: 40px;">
+            </td>
+        </tr>
+        <script>
+        function clicked(){
+            var title = document.getElementById("title").value;
+            var contents = document.getElementById("contents").value;
+            var id = document.cookie.split('=')[1];
+            
+            console.log(id)
+            console.log(title)
+            console.log(contents)
+
+            var data = {"id" : String(id), "title": title, "content": contents};
+
+            var req = new XMLHttpRequest();
+            req.open('POST', '/forum/writing', true);
+            req.setRequestHeader('Content-type', 'application/json');
+            req.send(JSON.stringify(data));
+            req.onreadystatechange = function (e) {
+            // readyStates는 XMLHttpRequest의 상태(state)를 반환
+            // readyState: 4 => DONE(서버 응답 완료)
+                if (req.readyState === XMLHttpRequest.DONE) {
+                    // status는 response 상태 코드를 반환 : 200 => 정상 응답
+                    if(req.status == 200) {
+                        var res_data = JSON.parse(req.responseText);
+                        if(res_data.status == "error"){
+                            alert(res_data.message);
+                            return;
+                        }
+                        else{
+                            alert('글 업로드가 완료되었습니다.')
+                            window.location.href = "/forum";
+                        }
+                    } else {
+                        console.log("Error!");
+                    }
+                }
+            }
+        }
+        </script>
+    </table>
+  
+</body>
+</html>

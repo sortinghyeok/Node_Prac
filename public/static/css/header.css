@@ -1,0 +1,32 @@
+@charset "UTF-8";
+
+tr {
+		width : 100%;
+	}
+	td {
+		width : 950px;
+		border : 2px solid gray;
+		border-radius: 4px;
+		height : 45px;
+	}
+	#nav {
+		align-items : 'center';
+		font-size: 30px;
+		padding-left: 30%;
+	}
+	table {
+		border-collapse: collapse;
+		align-self: center;
+	}
+	a{
+	text-decoration: none;
+	}
+	a:visited {
+	color : black;
+	}
+	a:link {
+	color : black;
+	}
+	a:hover {
+	color : gray;
+	}
